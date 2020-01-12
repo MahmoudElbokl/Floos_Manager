@@ -10,7 +10,7 @@ class Chart extends StatelessWidget {
     final provider = Provider.of<TransactionProvider>(context);
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(15),
+        padding: const EdgeInsets.symmetric(vertical: 7, horizontal: 4),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: provider.groupedTransactionsAmountPerDay.map((data) {

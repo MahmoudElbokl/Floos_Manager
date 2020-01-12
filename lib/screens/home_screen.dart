@@ -68,16 +68,17 @@ class _HomeScreenState extends State<HomeScreen> {
                           alignment: Alignment.center,
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
                             children: <Widget>[
                               Container(
                                 height: height * 0.5,
-                                width: size.width * 0.48,
+                                width: size.width * 0.57,
                                 alignment: Alignment.center,
                                 child: Chart(),
                               ),
                               Container(
-                                width: size.width * 0.5,
                                 height: height * 0.85,
+                                width: size.width * 0.42,
                                 child: TransactionList(),
                               ),
                             ],
@@ -92,6 +93,8 @@ class _HomeScreenState extends State<HomeScreen> {
             : Column(
                 children: <Widget>[
                   Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 4, vertical: 5),
                     height: height * 0.3,
                     child: Chart(),
                   ),

@@ -71,7 +71,8 @@ class _TransactionListState extends State<TransactionList> {
                         style: Theme.of(context).textTheme.title,
                       ),
                       subtitle: Text(
-                          "${DateFormat("yyyy/MMM/d").format(provider.transactions[index].data)}"),
+                          "${DateFormat("MMM/d").format(
+                              provider.transactions[index].data)}"),
                       leading: Container(
                         height: 40,
                         width: 75,
