@@ -5,6 +5,27 @@ import 'package:floss_manager/providers/transaction_model.dart';
 
 class TransactionProvider with ChangeNotifier {
   List<TransactionModel> _transactionList = [];
+  DateTime _dateSelected;
+  bool _selected = false;
+
+  get selected {
+    return _selected;
+  }
+
+  setSelect(bool select) {
+    _selected = select;
+    notifyListeners();
+  }
+
+  get dataSelected {
+    return _dateSelected;
+  }
+
+  setData(DateTime selectData) {
+    _dateSelected = selectData;
+    _selected = false;
+    notifyListeners();
+  }
 
   List<TransactionModel> get transactions {
     return [..._transactionList];

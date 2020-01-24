@@ -16,7 +16,6 @@ class _AddTransactionState extends State<AddTransaction> {
   String label = "amount";
   TextEditingController _titleController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
-  DateTime _dateSelected;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -28,119 +27,133 @@ class _AddTransactionState extends State<AddTransaction> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Container(
-        height: 350,
-        padding:
-            const EdgeInsets.only(left: 15, right: 20, top: 10, bottom: 15),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: <Widget>[
-            Form(
-              key: _formKey,
-              child: Column(
-                children: <Widget>[
-                  TextFormField(
-                    autofocus: true,
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Title is Required";
+    final provider = Provider.of<TransactionProvider>(context);
+    return Container(
+      height: 400,
+      padding: const EdgeInsets.only(left: 15, right: 20, top: 10, bottom: 15),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: <Widget>[
+          Form(
+            key: _formKey,
+            child: Column(
+              children: <Widget>[
+                TextFormField(
+                  autofocus: true,
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Title is Required";
+                    }
+                    return null;
+                  },
+                  controller: _titleController,
+                  keyboardType: TextInputType.text,
+                  decoration: InputDecoration(
+                      labelText: "Title", hintText: _titleController.text),
+                ),
+                TextFormField(
+                  validator: (value) {
+                    if (value.isEmpty) {
+                      return "Amount is required";
+                    } else {
+                      if (double.tryParse(value) == null) {
+                        return "Amount is Not valid";
                       }
                       return null;
-                    },
-                    controller: _titleController,
-                    keyboardType: TextInputType.text,
-                    decoration: InputDecoration(
-                        labelText: "Title", hintText: _titleController.text),
-                  ),
-                  TextFormField(
-                    validator: (value) {
-                      if (value.isEmpty) {
-                        return "Amount is required";
-                      } else {
-                        if (double.tryParse(value) == null) {
-                          return "Amount is Not valid";
-                        }
-                        return null;
-                      }
-                    },
-                    controller: _amountController,
-                    keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                        labelText: "Amount", hintText: _amountController.text),
-                  ),
-                ],
+                    }
+                  },
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      labelText: "Amount", hintText: _amountController.text),
+                ),
+              ],
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Text(
+                (provider.dataSelected == null)
+                    ? "There is no Data picked"
+                    : "Picked date: ${DateFormat.yMd().format(
+                    provider.dataSelected)}",
               ),
+              FlatButton(
+                onPressed: () {
+                  _datePick();
+                },
+                child: Text("Create Date"),
+              ),
+            ],
+          ),
+          provider.selected == false
+              ? SizedBox.shrink()
+              : Align(
+            alignment: Alignment.centerLeft,
+            child: Text(
+              "Please Select Data",
+              style: TextStyle(color: Colors.red),
             ),
-            SizedBox(
-              height: 10,
-            ),
-            StatefulBuilder(
-              builder: (context, updateDateState) {
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text((_dateSelected.toString().isEmpty ||
-                            _dateSelected == null)
-                        ? "There is no Data picked"
-                        : "Picked date: ${DateFormat.yMd().format(_dateSelected)}"),
-                    FlatButton(
-                      onPressed: () {
-                        _datePick(updateDateState);
-                      },
-                      child: Text("Create Date"),
-                    ),
-                  ],
-                );
-              },
-            ),
-            Platform.isIOS
-                ? Column(
-                    children: <Widget>[
-                      CupertinoButton(
-                        child: Text("Add Transaction"),
-                        onPressed: () {
-                          addTransaction();
-                        },
-                      ),
-                      CupertinoButton(
-                          child: Text("Cancel"),
-                          onPressed: () => Navigator.pop(context)),
-                    ],
-                  )
-                : Column(
-                    children: <Widget>[
-                      RaisedButton(
-                        onPressed: () {
-                          addTransaction();
-                        },
-                        child: Text("Add Transaction"),
-                      ),
-                      RaisedButton(
-                          child: Text("Cancel"),
-                          onPressed: () => Navigator.pop(context)),
-                    ],
-                  )
-          ],
-        ),
+          ),
+          Platform.isIOS
+              ? Column(
+            children: <Widget>[
+              CupertinoButton(
+                child: Text("Add Transaction"),
+                onPressed: () {
+                  addTransaction();
+                },
+              ),
+              CupertinoButton(
+                  child: Text("Cancel"),
+                  onPressed: () => Navigator.pop(context)),
+            ],
+          )
+              : Column(
+            children: <Widget>[
+              RaisedButton(
+                onPressed: () {
+                  addTransaction();
+                },
+                child: Text("Add Transaction"),
+              ),
+              RaisedButton(
+                  child: Text("Cancel"),
+                  onPressed: () {
+                    Provider.of<TransactionProvider>(context,
+                        listen: false)
+                        .selected(false);
+                    Navigator.pop(context);
+                  }),
+            ],
+          )
+        ],
       ),
     );
   }
 
   addTransaction() {
-    if (_formKey.currentState.validate()) {
-      final provider = Provider.of<TransactionProvider>(context, listen: false);
+    final provider = Provider.of<TransactionProvider>(context, listen: false);
+    if (_formKey.currentState.validate() && provider.dataSelected != null) {
       final transaction = TransactionModel(
           id: provider.newId.toString(),
           title: _titleController.text,
           amount: double.parse(_amountController.text),
-          data: _dateSelected);
+          data: provider.dataSelected);
       Navigator.pop(context);
       provider.addTransaction(transaction);
+    } else {
+      if (provider.dataSelected == null) {
+        provider.setSelect(true);
+      }
     }
   }
 
-  void _datePick(updateDateState) async {
+  void _datePick() async {
     final DateTime datePicked = Platform.isIOS
         ? CupertinoDatePicker(onDateTimeChanged: null)
         : await showDatePicker(
@@ -152,9 +165,8 @@ class _AddTransactionState extends State<AddTransaction> {
     if (datePicked == null)
       return null;
     else {
-      updateDateState(() {
-        _dateSelected = datePicked;
-      });
+      Provider.of<TransactionProvider>(context, listen: false)
+          .setData(datePicked);
     }
   }
 }
