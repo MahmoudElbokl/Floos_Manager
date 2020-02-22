@@ -78,7 +78,8 @@ class _AddTransactionState extends State<AddTransaction> {
             children: <Widget>[
               Text(
                 (provider.dataSelected == null)
-                    ? "There is no Data picked"
+                    ? "Picked date:${DateFormat("d-M-y").format(
+                    DateTime.now())}"
                     : "Picked date: ${DateFormat.yMd().format(
                     provider.dataSelected)}",
               ),
@@ -86,18 +87,9 @@ class _AddTransactionState extends State<AddTransaction> {
                 onPressed: () {
                   _datePick();
                 },
-                child: Text("Create Date"),
+                child: Text("Change Date"),
               ),
             ],
-          ),
-          provider.selected == false
-              ? SizedBox.shrink()
-              : Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              "Please Select Data",
-              style: TextStyle(color: Colors.red),
-            ),
           ),
           Platform.isIOS
               ? Column(
@@ -138,18 +130,14 @@ class _AddTransactionState extends State<AddTransaction> {
 
   addTransaction() {
     final provider = Provider.of<TransactionProvider>(context, listen: false);
-    if (_formKey.currentState.validate() && provider.dataSelected != null) {
+    if (_formKey.currentState.validate()) {
       final transaction = TransactionModel(
           id: provider.newId.toString(),
           title: _titleController.text,
           amount: double.parse(_amountController.text),
-          data: provider.dataSelected);
+          data: provider.dataSelected ?? DateTime.now());
       Navigator.pop(context);
       provider.addTransaction(transaction);
-    } else {
-      if (provider.dataSelected == null) {
-        provider.setSelect(true);
-      }
     }
   }
 
