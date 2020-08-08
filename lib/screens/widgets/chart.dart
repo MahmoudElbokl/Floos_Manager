@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
 import 'package:floss_manager/providers/transaction_provider.dart';
-import 'package:floss_manager/widgets/chart_bar.dart';
+import 'package:floss_manager/screens/widgets/chart_bar.dart';
 
 class Chart extends StatelessWidget {
   @override

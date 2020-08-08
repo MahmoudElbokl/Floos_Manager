@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-
 import 'package:floss_manager/providers/transaction_provider.dart';
 
 class TransactionList extends StatefulWidget {
@@ -19,6 +18,7 @@ class _TransactionListState extends State<TransactionList> {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 15),
           child: (provider.transactions.isEmpty)
+          // empty transaction
               ? Container(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -49,6 +49,7 @@ class _TransactionListState extends State<TransactionList> {
                     ],
                   ),
                 )
+          // transaction list
               : ListView.builder(
                   itemCount: provider.transactions.length,
                   itemBuilder: (context, index) {

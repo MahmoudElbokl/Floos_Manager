@@ -3,8 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
-import 'package:floss_manager/providers/transaction_model.dart';
+import 'package:floss_manager/model/transaction_model.dart';
 import 'package:floss_manager/providers/transaction_provider.dart';
 
 class AddTransaction extends StatefulWidget {
@@ -17,6 +16,36 @@ class _AddTransactionState extends State<AddTransaction> {
   TextEditingController _titleController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  addTransaction() {
+    final provider = Provider.of<TransactionProvider>(context, listen: false);
+    if (_formKey.currentState.validate()) {
+      final transaction = TransactionModel(
+          id: provider.newId.toString(),
+          title: _titleController.text,
+          amount: double.parse(_amountController.text),
+          data: provider.dataSelected ?? DateTime.now());
+      Navigator.pop(context);
+      provider.addTransaction(transaction);
+    }
+  }
+
+  void _datePick() async {
+    final DateTime datePicked = Platform.isIOS
+        ? CupertinoDatePicker(onDateTimeChanged: null)
+        : await showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime.now().subtract(Duration(days: 730)),
+            lastDate: DateTime.now().add(Duration(days: 730)),
+          );
+    if (datePicked == null)
+      return null;
+    else {
+      Provider.of<TransactionProvider>(context, listen: false)
+          .setData(datePicked);
+    }
+  }
 
   @override
   void dispose() {
@@ -34,6 +63,7 @@ class _AddTransactionState extends State<AddTransaction> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
+          // transaction title and amount
           Form(
             key: _formKey,
             child: Column(
@@ -73,6 +103,7 @@ class _AddTransactionState extends State<AddTransaction> {
           SizedBox(
             height: 10,
           ),
+          // date picker
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
@@ -126,35 +157,5 @@ class _AddTransactionState extends State<AddTransaction> {
         ],
       ),
     );
-  }
-
-  addTransaction() {
-    final provider = Provider.of<TransactionProvider>(context, listen: false);
-    if (_formKey.currentState.validate()) {
-      final transaction = TransactionModel(
-          id: provider.newId.toString(),
-          title: _titleController.text,
-          amount: double.parse(_amountController.text),
-          data: provider.dataSelected ?? DateTime.now());
-      Navigator.pop(context);
-      provider.addTransaction(transaction);
-    }
-  }
-
-  void _datePick() async {
-    final DateTime datePicked = Platform.isIOS
-        ? CupertinoDatePicker(onDateTimeChanged: null)
-        : await showDatePicker(
-            context: context,
-            initialDate: DateTime.now(),
-            firstDate: DateTime.now().subtract(Duration(days: 730)),
-            lastDate: DateTime.now().add(Duration(days: 730)),
-          );
-    if (datePicked == null)
-      return null;
-    else {
-      Provider.of<TransactionProvider>(context, listen: false)
-          .setData(datePicked);
-    }
   }
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
-import 'package:floss_manager/providers/transaction_model.dart';
+import 'package:floss_manager/model/transaction_model.dart';
 
 class TransactionProvider with ChangeNotifier {
   List<TransactionModel> _transactionList = [];

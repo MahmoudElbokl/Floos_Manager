@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'dart:io';
-
-import 'package:floss_manager/widgets/add_transaction.dart';
-import 'package:floss_manager/widgets/transaction_list.dart';
-import 'package:floss_manager/widgets/chart.dart';
+import 'package:floss_manager/screens/widgets/add_transaction.dart';
+import 'package:floss_manager/screens/widgets/transaction_list.dart';
+import 'package:floss_manager/screens/widgets/chart.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -14,6 +13,10 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _bottomSheet = GlobalKey<ScaffoldState>();
   bool _showChert = false;
+
+  void showAddTransactionSheet(ct) {
+    this._bottomSheet.currentState.showBottomSheet((ctx) => AddTransaction());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   })
             ],
           );
+
     // height is device size subtracted by height of appbar and system notification bar
     final double height = (size.height -
         (appBar.preferredSize.height + MediaQuery.of(context).padding.top));
@@ -125,7 +129,4 @@ class _HomeScreenState extends State<HomeScreen> {
           );
   }
 
-  void showAddTransactionSheet(ct) {
-    this._bottomSheet.currentState.showBottomSheet((ctx) => AddTransaction());
-  }
 }
