@@ -109,10 +109,8 @@ class _AddTransactionState extends State<AddTransaction> {
             children: <Widget>[
               Text(
                 (provider.dataSelected == null)
-                    ? "Picked date:${DateFormat("d-M-y").format(
-                    DateTime.now())}"
-                    : "Picked date: ${DateFormat.yMd().format(
-                    provider.dataSelected)}",
+                    ? "Picked date:${DateFormat("d-M-y").format(DateTime.now())}"
+                    : "Picked date: ${DateFormat.yMd().format(provider.dataSelected)}",
               ),
               FlatButton(
                 onPressed: () {
@@ -124,36 +122,36 @@ class _AddTransactionState extends State<AddTransaction> {
           ),
           Platform.isIOS
               ? Column(
-            children: <Widget>[
-              CupertinoButton(
-                child: Text("Add Transaction"),
-                onPressed: () {
-                  addTransaction();
-                },
-              ),
-              CupertinoButton(
-                  child: Text("Cancel"),
-                  onPressed: () => Navigator.pop(context)),
-            ],
-          )
+                  children: <Widget>[
+                    CupertinoButton(
+                      child: Text("Add Transaction"),
+                      onPressed: () {
+                        addTransaction();
+                      },
+                    ),
+                    CupertinoButton(
+                        child: Text("Cancel"),
+                        onPressed: () => Navigator.pop(context)),
+                  ],
+                )
               : Column(
-            children: <Widget>[
-              RaisedButton(
-                onPressed: () {
-                  addTransaction();
-                },
-                child: Text("Add Transaction"),
-              ),
-              RaisedButton(
-                  child: Text("Cancel"),
-                  onPressed: () {
-                    Provider.of<TransactionProvider>(context,
-                        listen: false)
-                        .selected(false);
-                    Navigator.pop(context);
-                  }),
-            ],
-          )
+                  children: <Widget>[
+                    RaisedButton(
+                      onPressed: () {
+                        addTransaction();
+                      },
+                      child: Text("Add Transaction"),
+                    ),
+                    RaisedButton(
+                        child: Text("Cancel"),
+                        onPressed: () {
+                          Provider.of<TransactionProvider>(context,
+                                  listen: false)
+                              .setSelect(false);
+                          Navigator.pop(context);
+                        }),
+                  ],
+                )
         ],
       ),
     );
